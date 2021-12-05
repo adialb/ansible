@@ -4,8 +4,10 @@
 
   tasks:
   - name: install packages
-    apt:
-      name: htop
+    package:
+      name:
+        - htop
+        - python-psutil
 
   - name: copy wallpaper file
     copy:
