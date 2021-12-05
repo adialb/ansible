@@ -1,0 +1,56 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+  - name: install packages
+    package:
+      name:
+        - htop
+
+  - name: copy wallpaper file
+    copy:
+      src: files/dev.png
+      dest: /usr/share/backgrounds/ansible-wallpaper.png
+      owner: root
+      group: root
+
+  - name: set wallpaper
+    become_user: adi
+    dconf:
+      key: "/org/gnome/desktop/background/picture-uri"
+      value: "'file:///usr/share/backgrounds/ansible-wallpaper.png'"
+
+  - name: set wallpaper position
+    become_user: adi
+    dconf:
+      key: "/org/gnome/desktop/background/picture-options"
+      value: "'zoom'"
+
+  # - name: copy .bashrc file
+  #   copy:
+  #    src: files/bashrc
+  #    dest: /home/jay/.bashrc
+  #    owner: jay
+  #    group: jay
+
+  - name: add ansible user
+    user:
+      name: ansibleuser
+      system: yes
+
+  - name: set up sudo for ansible user
+    copy:
+      src: files/sudoer_ansibleuser
+      dest: /etc/sudoers.d/ansibleuser
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: add ansible-pull cron job
+    cron:
+      name: ansible auto-provision
+      user: ansibleuser
+      minute: "*/10"
+      job: ansible-pull -o -U https://github.com/adialb/ansible.git
