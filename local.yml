@@ -28,12 +28,19 @@
       key: "/org/gnome/desktop/background/picture-options"
       value: "'zoom'"
 
+  - name: Copy lockscreenfile
+    copy: src=files/thinking.jpg dest=/usr/share/backgrounds/ansible-screensaver.jpg owner=root group=root mode=600
+
+  - name: Set lock screen background
+    become_user: jay
+    dconf: key="/org/gnome/desktop/screensaver/picture-uri" value="'file:///usr/share/backgrounds/ansible-screensaver.jpg'"
+
   # - name: copy .bashrc file
   #   copy:
   #    src: files/bashrc
-  #    dest: /home/jay/.bashrc
-  #    owner: jay
-  #    group: jay
+  #    dest: /home/adi/.bashrc
+  #    owner: adi
+  #    group: adi
 
   # - name: add ansible user
   #   user:
