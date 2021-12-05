@@ -29,7 +29,7 @@
       value: "'zoom'"
 
   - name: Copy lockscreenfile
-    copy: src=files/thinking.jpg dest=/usr/share/backgrounds/ansible-screensaver.jpg owner=adi group=adi mode=600
+    copy: src=files/thinking.jpg dest=/usr/share/backgrounds/ansible-screensaver.jpg owner=root group=root
 
   - name: Set lock screen background
     become_user: jay
