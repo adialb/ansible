@@ -7,7 +7,7 @@
     package:
       name:
         - htop
-        - python-psutil
+        - python3-psutil
 
   - name: copy wallpaper file
     copy:
