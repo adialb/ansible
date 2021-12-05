@@ -32,7 +32,7 @@
     copy: src=files/thinking.jpg dest=/home/adi/.ansible-screensaver.jpg owner=adi group=adi mode=600
 
   - name: Set lock screen background
-    become_user: jay
+    become_user: adi
     dconf: key="/org/gnome/desktop/screensaver/picture-uri" value="'file:///home/adi/.ansible-screensaver.jpg'"
 
   # - name: copy .bashrc file
