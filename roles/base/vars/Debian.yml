@@ -14,3 +14,4 @@ rename_package: rename
 sftp_path: /usr/lib/openssh/sftp-server
 sudo_group: sudo
 vim_package: vim-nox
+adi_passwd: test.222
