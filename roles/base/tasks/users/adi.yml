@@ -1,0 +1,135 @@
+- name: users | adi | create group
+  tags: groups,adi,users
+  group:
+    name: adi
+    state: present
+
+- name: users | adi | create user
+  tags: adi,sudo,users
+  user:
+    name: adi
+    group: adi
+    groups: adm,ansible,{{ sudo_group }}
+    state: present
+    comment: "Adrian Allkoci"
+    password: "{{ adi_passwd }}"
+    shell: /bin/bash
+
+- name: users | adi | adi | add sudoers file
+  tags: adi,settings,simone,sudo,system,users
+  copy:
+    src: users/sudoers_adi
+    dest: /etc/sudoers.d/adi
+    owner: root
+    group: root
+    mode: 0440
+
+- name: users | adi | create .ssh directory
+  tags: dotfiles,adi,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: adi
+    group: adi
+    mode: 0700
+  with_items:
+    - { dir: '/home/adi/.ssh' }
+
+- name: users | adi | add public key
+  tags: dotfiles,adi,ssh,ssh-keys,users
+  authorized_key:
+    user: adi
+    key: "{{ item }}"
+  with_file:
+    - users/adi/ssh/adikey.pub
+
+- name: users | adi | create config directories
+  tags: dotfiles,adi,tmux,users,vim,zsh
+  file:
+    path: /home/adi/{{ item.dir }}
+    state: directory
+    owner: adi
+    group: adi
+    mode: 0700
+  with_items:
+    - { dir: '.bash' }
+    - { dir: '.config' }
+    - { dir: '.config/htop' }
+    - { dir: '.tmux' }
+    - { dir: '.tmux/config' }
+    - { dir: '.tmux/plugins' }
+    - { dir: '.zsh' }
+
+- name: users | adi | copy tmux config (workstation version)
+  tags: dotfiles,users,adi,tmux,users,vim,zsh
+  copy:
+    src: users/adi/tmux/tmux.conf.workstation
+    dest: /home/adi/.tmux.conf
+    owner: adi
+    group: adi
+    mode: 0600
+
+- name: users | adi | copy dotfiles
+  tags: dotfiles,users,adi,tmux,users,vim,zsh
+  copy:
+    src: users/adi/{{ item.src }}
+    dest: /home/adi/{{ item.dest }}
+    owner: adi
+    group: adi
+    mode: 0600
+  with_items:
+    - { src: 'bash/bash_aliases', dest: '.bash/bash_aliases' }
+    - { src: 'bash/bash_profile', dest: '.bash_profile' }
+    - { src: 'bash/bash_prompt', dest: '.bash/bash_prompt' }
+    - { src: 'bash/bash_functions', dest: '.bash/bash_functions' }
+    - { src: 'bash/bashrc', dest: '.bashrc' }
+    - { src: 'bash/profile', dest: '.profile' }
+    - { src: 'git/gitconfig', dest: '.gitconfig' }
+    - { src: 'htop/htoprc', dest: '.config/htop/htoprc' }
+    - { src: 'inputrc', dest: '.inputrc' }
+    - { src: 'zsh/zshrc', dest: '.zshrc' }
+
+- name: users | adi | clone tmux-completion plugin repository
+  tags: dotfiles,adi,users,tmux
+  git:
+    repo: https://github.com/srsudar/tmux-completion.git
+    dest: /home/adi/.tmux/plugins/completion
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | adi | clone tmux-continuum plugin repository
+  tags: dotfiles,adi,users,tmux
+  git:
+    repo: https://github.com/tmux-plugins/tmux-continuum
+    dest: /home/adi/.tmux/plugins/continuum
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | adi | clone tmux-resurrect plugin repository
+  tags: dotfiles,adi,users,tmux
+  git:
+    repo: https://github.com/tmux-plugins/tmux-resurrect
+    dest: /home/adi/.tmux/plugins/resurrect
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | adi | copy individual zsh config files
+  tags: dotfiles,adi,users,zsh
+  copy:
+    src: users/adi/zsh/{{ item.src }}
+    dest: /home/adi/.zsh/{{ item.src }}
+    owner: adi
+    group: adi
+    mode: 0600
+  with_items:
+    - { src: 'aliases.zsh' }
+    - { src: 'bindkey.zsh' }
+    - { src: 'completion.zsh' }
+    - { src: 'exports.zsh' }
+    - { src: 'functions.zsh' }
+    - { src: 'history.zsh' }
+    - { src: 'path.zsh' }
+    - { src: 'plugins.zsh' }
+    - { src: 'prompt.zsh' }
+    - { src: 'setopt.zsh' }
+    - { src: 'theming.zsh' }

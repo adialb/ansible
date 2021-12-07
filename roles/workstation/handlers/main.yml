@@ -1,0 +1,28 @@
+---
+- name: restart_autofs
+  tags: autofs,system,system setup
+  service:
+    name: autofs
+    state: restarted
+
+
+- name: update_xdg
+  tags: users,config,xdg
+  become_user: adi
+  command: /usr/bin/xdg-user-dirs-update
+
+# GNOME stuff
+- name: gnome_tracker_clean_cache
+  tags: gnome,tracker
+  file:
+    path: /home/adi/.cache/tracker
+    state: absent
+
+- name: gnome_tracker_clean_local_cache
+  tags: gnome,tracker
+  file:
+    path: /home/adi/.local/share/tracker
+    state: absent
+
+- name: enable_gnome_extensions
+  include_tasks: handlers/enable_gnome_extensions.yml

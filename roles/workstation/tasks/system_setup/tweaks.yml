@@ -1,0 +1,34 @@
+# set up flatpak support
+- name: system setup | tweaks | add flatpak support
+  package:
+    name: flatpak
+    state: present
+
+- name: system setup | tweaks | flatpak | add flathub remote
+  tags: packages,flatpak,workstation-packages
+  become_user: adi
+  flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+    method: user
+    state: present
+
+
+# distro-specific tasks for ubuntu
+# - name: system setup | tweaks | disable apport in config on ubuntu-based hosts
+#   tags: distro,distro-setup,apport,ubuntu
+#   lineinfile:
+#     dest: /etc/default/apport
+#     regexp: "enabled="
+#     line: "enabled=0"
+#   failed_when: false
+#   when: ansible_distribution in ["Pop!_OS", "Ubuntu"]
+
+# - name: system setup | tweaks | disable and stop apport service on ubuntu-based hosts
+#   tags: distro,distro-setup,apport,ubuntu
+#   service:
+#     name: apport
+#     enabled: no
+#     state: stopped
+#   failed_when: false
+#   when: ansible_distribution in ["Pop!_OS", "Ubuntu"]

@@ -1,0 +1,16 @@
+- name: users | adians | add public key
+  tags: dotfiles,adians,ssh,ssh-keys,users
+  authorized_key:
+    user: adians
+    key: "{{ item }}"
+  with_file:
+    - users/adians/ssh/adians_ed25519.pub
+
+- name: users | adians | add sudoers file
+  tags: settings,adians,sudo,system,users
+  copy:
+    src: users/sudoers_adians
+    dest: /etc/sudoers.d/adians
+    owner: root
+    group: root
+    mode: 0440

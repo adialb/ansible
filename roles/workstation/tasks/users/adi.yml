@@ -1,0 +1,67 @@
+- name: users | adi | remove preinstalled clutter from home directory
+  file:
+    path: /home/adi/{{ item }}
+    state: absent
+  with_items:
+    - examples.desktop
+    - Desktop
+    - Documents
+    - Downloads
+    - Music
+    - Pictures
+    - Public
+    - Templates
+    - Videos
+
+- name: users | adi | create personal config directories
+  tags: dotfiles,dotfiles-adi
+  file:
+    path: /home/adi/{{ item.dir }}
+    state: directory
+    owner: adi
+    group: adi
+    mode: 0700
+  with_items:
+    - { dir: .config }
+    - { dir: .config/autostart }
+    - { dir: .config/bpytop }
+    - { dir: .local }
+    - { dir: .local/share }
+    - { dir: .local/share/applications }
+    - { dir: bin }
+    - { dir: desktop }
+    - { dir: documents }
+    - { dir: downloads }
+    - { dir: projects }
+    - { dir: templates }
+
+- name: users | adi | copy user-dirs.dirs
+  tags: dotfiles,dotfiles-adi
+  copy:
+    src: users/adi/user-dirs.dirs
+    dest: /home/adi/.config/user-dirs.dirs
+    owner: adi
+    group: adi
+    mode: 0600
+  notify: update_xdg
+
+- name: users | adi | copy personal config files
+  tags: dotfiles,dotfiles-adi
+  copy:
+    src: users/adi/{{ item.src }}
+    dest: /home/adi/{{ item.dest }}
+    owner: adi
+    group: adi
+    mode: 0600
+  with_items:
+    - { src: 'bpytop.conf', dest: '.config/bpytop/bpytop.conf' }
+    - { src: 'ssh_client_config', dest: '.ssh/config' }
+
+# - name: users | adi | copy profile image
+#   tags: dotfiles,dotfiles-adi
+#   copy:
+#     src: users/adi/profile_image.png
+#     dest: /var/lib/AccountsService/icons/adi.png
+#     owner: root
+#     group: root
+#     mode: 0644

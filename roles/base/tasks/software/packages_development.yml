@@ -1,0 +1,9 @@
+- name: system setup | development packages | install packages
+  tags: dev,development,packages,python,ruby
+  package:
+    name:
+      - git
+      - "{{ python_package }}"
+      - "{{ python_pip_package }}"
+      - "{{ python_pyflakes_package }}"
+    state: latest

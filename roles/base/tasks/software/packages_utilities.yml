@@ -1,0 +1,11 @@
+- name: system setup | utilities | install utility packages
+  tags: packages,system,settings
+  package:
+    state: latest
+    name:
+      - colordiff
+      - curl
+      - htop
+      - tmux
+      - wget
+      - zsh

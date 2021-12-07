@@ -1,39 +1,53 @@
+---
+
 - hosts: localhost
   connection: local
   become: true
+  pre_tasks:
+    - name: pre-run | update package cache (debian, etc)
+      apt: update_cache=yes
+      changed_when: False
+      when: ansible_distribution in ["Debian", "Ubuntu"]
 
-  tasks:
-  - name: install packages
-    package:
-      name:
-        - htop
-        - python3-psutil
+# run roles
+- hosts: all
+  tags: base
+  become: true
+  roles:
+    - base
 
-  - name: copy wallpaper file
-    copy:
-      src: files/dev.png
-      dest: /usr/share/backgrounds/ansible-wallpaper.png
-      owner: root
-      group: root
+- hosts: workstation
+  tags: workstation
+  become: true
+  roles:
+    - workstation
 
-  - name: set wallpaper
-    become_user: adi
-    dconf:
-      key: "/org/gnome/desktop/background/picture-uri"
-      value: "'file:///usr/share/backgrounds/ansible-wallpaper.png'"
 
-  - name: set wallpaper position
-    become_user: adi
-    dconf:
-      key: "/org/gnome/desktop/background/picture-options"
-      value: "'zoom'"
+  # tasks:
+  # - name: install packages
+  #   package:
+  #     name:
+  #       - htop
+  #       - python3-psutil
 
-  - name: Copy lockscreenfile
-    copy: src=files/thinking.jpg dest=/home/adi/.ansible-screensaver.jpg owner=adi group=adi mode=600
+  # - name: copy wallpaper file
+  #   copy:
+  #     src: files/dev.png
+  #     dest: /usr/share/backgrounds/ansible-wallpaper.png
+  #     owner: root
+  #     group: root
 
-  - name: Set lock screen background
-    become_user: adi
-    dconf: key="/org/gnome/desktop/screensaver/picture-uri" value="'file:///home/adi/.ansible-screensaver.jpg'"
+  # - name: set wallpaper
+  #   become_user: adi
+  #   dconf:
+  #     key: "/org/gnome/desktop/background/picture-uri"
+  #     value: "'file:///usr/share/backgrounds/ansible-wallpaper.png'"
+
+  # - name: set wallpaper position
+  #   become_user: adi
+  #   dconf:
+  #     key: "/org/gnome/desktop/background/picture-options"
+  #     value: "'zoom'"
 
   # - name: copy .bashrc file
   #   copy:
@@ -61,3 +75,19 @@
   #     user: ansibleuser
   #     minute: "*/10"
   #     job: ansible-pull -o -U https://github.com/adialb/ansible.git
+- hosts: all
+  become: true
+  tasks:
+  - name: cleanup package cache (debian and ubuntu)
+    tags: always
+    apt:
+      autoclean: yes
+    changed_when: false
+    when: ansible_distribution in ["Debian", "Pop!_OS", "Ubuntu"]
+
+  - name: autoremove orphan packages (debian and ubuntu)
+    tags: always
+    apt:
+      autoremove: yes
+      purge: yes
+    when: ansible_distribution in ["Debian", "Pop!_OS", "Ubuntu"]
