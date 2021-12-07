@@ -5,5 +5,5 @@
     name: flathub com.bitwarden.desktop
     method: user
     state: present
-  when: bitwarden is defined and bitwarden == true
+  # when: bitwarden is defined and bitwarden == true
 

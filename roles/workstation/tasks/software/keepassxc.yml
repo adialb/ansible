@@ -24,7 +24,7 @@
     group: adi
     mode: 0700
   register: keepassxc_config_dir
-  when: keepassxc is defined and keepassxc == true
+  # when: keepassxc is defined and keepassxc == true
 
 - name: software | keepassxc | add initial keepassxc config
   tags: packages,keepassxc,flatpak,workstation-packages
@@ -34,4 +34,4 @@
     owner: adi
     group: adi
     mode: 0600
-  when: keepassxc is defined and keepassxc == true
+  # when: keepassxc is defined and keepassxc == true

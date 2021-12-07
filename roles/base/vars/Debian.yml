@@ -9,9 +9,8 @@ python_package: python3
 python_pip_package: python3-pip
 python_psutil_package: python3-psutil
 python_pyflakes_package: python3-pyflakes
-python_virtualenv_package: python3-virtualenv
+# python_virtualenv_package: python3-virtualenv
 rename_package: rename
 sftp_path: /usr/lib/openssh/sftp-server
 sudo_group: sudo
 vim_package: vim-nox
-adi_passwd: test.222
