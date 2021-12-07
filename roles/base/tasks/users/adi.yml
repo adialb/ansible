@@ -1,28 +1,28 @@
-- name: users | adi | create group
-  tags: groups,adi,users
-  group:
-    name: adi
-    state: present
+# - name: users | adi | create group
+#   tags: groups,adi,users
+#   group:
+#     name: adi
+#     state: present
 
-- name: users | adi | create user
-  tags: adi,sudo,users
-  user:
-    name: adi
-    group: adi
-    groups: adm,ansible,{{ sudo_group }}
-    state: present
-    comment: "Adrian Allkoci"
-    password: "{{ adi_passwd }}"
-    shell: /bin/bash
+# - name: users | adi | create user
+#   tags: adi,sudo,users
+#   user:
+#     name: adi
+#     group: adi
+#     groups: adm,ansible,{{ sudo_group }}
+#     state: present
+#     comment: "Adrian Allkoci"
+#     password: "{{ adi_passwd }}"
+#     shell: /bin/bash
 
-- name: users | adi | adi | add sudoers file
-  tags: adi,settings,simone,sudo,system,users
-  copy:
-    src: users/sudoers_adi
-    dest: /etc/sudoers.d/adi
-    owner: root
-    group: root
-    mode: 0440
+# - name: users | adi | adi | add sudoers file
+#   tags: adi,settings,simone,sudo,system,users
+#   copy:
+#     src: users/sudoers_adi
+#     dest: /etc/sudoers.d/adi
+#     owner: root
+#     group: root
+#     mode: 0440
 
 - name: users | adi | create .ssh directory
   tags: dotfiles,adi,ssh,users
